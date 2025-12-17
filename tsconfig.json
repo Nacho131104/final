@@ -3,8 +3,8 @@
 
 
 
-{
-    "compilerOptions": {
+{ 
+  "compilerOptions": {
       "target": "es2020",
       "module": "commonjs",
       "rootDir": "src",
