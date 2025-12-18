@@ -1,6 +1,8 @@
+import { ObjectId } from "mongodb";
 import { getDb } from "../mongo/conexion";
 import { COLLECTION_TRAINERS } from "../utils";
 import bcrypt from "bcryptjs";
+import { Trainer } from "../types";
 
 export const registerTrainer = async(name: string,password: string)=>{
 
@@ -36,3 +38,15 @@ export const comprobarContraseña =async (name:string,password:string)=>{
     return usuario
 }
 
+
+//funcion para comprobar el tamaño de los capturados
+export const comprobarPokemonsCapturados = async (idTrainer: string) =>{
+    const db = getDb()
+
+    const trainer = await db.collection<Trainer>(COLLECTION_TRAINERS).findOne({_id: new ObjectId(idTrainer)})
+    if(!trainer) throw new Error("Este entrenador es inexistente")
+    const capturados = trainer.pokemons
+    if(capturados.length >=6) return false
+    return true
+
+}

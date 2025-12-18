@@ -1,6 +1,8 @@
-import { COLLECTION_POKEMONS } from "../utils";
+import { COLLECTION_POKEMONS,COLLECTION_OWNEDS } from "../utils";
 import { Pokemon, PokemonType } from "../types";
 import { getDb } from "../mongo/conexion";
+import { ObjectId } from "mongodb";
+import { types } from "util";
 
 
 const comprobartipos = (type: string) =>{
@@ -30,4 +32,18 @@ export const crearPokemon = async(name: string,description: string,height:number
         types
     }
 
+}
+
+export const getPokemonById = async(id: string) =>{
+    const db = getDb()
+
+    const pokemon = await db.collection(COLLECTION_POKEMONS).findOne({_id: new ObjectId(id)})
+    return pokemon
+}
+
+export const getPokemons = async (page ?: number, size ?: number) =>{
+    const db = getDb();
+    page = page || 1;
+    size = size || 10;
+    return await db.collection(COLLECTION_POKEMONS).find().skip((page - 1) * size).limit(size).toArray();
 }
