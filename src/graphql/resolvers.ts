@@ -1,6 +1,7 @@
 import { IResolvers } from "@graphql-tools/utils";
 import { comprobarContraseña, registerTrainer } from "../collections/trainers";
 import { signToken } from "../auth";
+import { crearPokemon } from "../collections/pokemons";
 
 
 
@@ -20,6 +21,7 @@ export const resolvers: IResolvers = {
         },
         createPokemon: async(_,{name,description,height,weight,types},{trainer})=>{
             if(!trainer)throw new Error("Debes logearte primero")
+            return await crearPokemon(name,description,height,weight,types)
         }
     },
     Query: {
