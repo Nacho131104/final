@@ -45,3 +45,8 @@ export type OwnedPokemon ={
     special: number
     level: number
 }
+
+
+export type TokenPayload = {
+    userId: string;
+}

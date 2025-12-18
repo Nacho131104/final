@@ -3,6 +3,7 @@ import { ApolloServer } from "apollo-server";
 import { connectmongodb } from "./mongo/conexion"
 import {typeDefs} from "./graphql/schema"
 import {resolvers} from "./graphql/resolvers"
+import { getTrainerFromToken } from "./auth";
 dotenv.config()
 
 
@@ -12,6 +13,11 @@ const app = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    context: async ({ req }) => {
+        const token = req.headers.authorization || "";
+        const trainer = token ? await getTrainerFromToken(token as string) : null;
+        return { trainer };
+    },
   });
   await server.listen({ port: 5000 });
   console.log("Inciado server sql");
