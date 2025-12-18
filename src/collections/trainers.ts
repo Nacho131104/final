@@ -3,6 +3,7 @@ import { getDb } from "../mongo/conexion";
 import { COLLECTION_TRAINERS } from "../utils";
 import bcrypt from "bcryptjs";
 import { Trainer } from "../types";
+import { get } from "axios";
 
 export const registerTrainer = async(name: string,password: string)=>{
 
@@ -49,4 +50,13 @@ export const comprobarPokemonsCapturados = async (idTrainer: string) =>{
     if(capturados.length >=6) return false
     return true
 
+}
+
+
+export const getPokemonsCap = async(trainerId: string)=>{
+    const db = getDb()
+
+    const trainer = await db.collection<Trainer>(COLLECTION_TRAINERS).findOne({_id: new ObjectId(trainerId)})
+    const poks = trainer?.pokemons
+    return poks
 }

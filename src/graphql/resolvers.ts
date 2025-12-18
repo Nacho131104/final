@@ -1,5 +1,5 @@
 import { IResolvers } from "@graphql-tools/utils";
-import { comprobarContraseña, comprobarPokemonsCapturados, registerTrainer } from "../collections/trainers";
+import { comprobarContraseña, comprobarPokemonsCapturados, getPokemonsCap, registerTrainer } from "../collections/trainers";
 import { signToken } from "../auth";
 import { crearPokemon, getPokemonById, getPokemons } from "../collections/pokemons";
 import { COLLECTION_POKEMONS, COLLECTION_TRAINERS, numeroAleatorio } from "../utils";
@@ -69,6 +69,16 @@ export const resolvers: IResolvers = {
         },
         freePokemon:async(_,{ownedPokemonId},{trainer})=>{
             if(!trainer)throw new Error("Debes de logearte primero")
+
+            const db = getDb()
+            //primero eliminamos el pokemon de la lista del entrenador
+            const modificado = await db.collection(COLLECTION_TRAINERS).updateOne(
+                {_id: trainer._id},
+                {$pull: {pokemons: ownedPokemonId.toString()}}
+            )
+            if(!modificado)throw new Error("No se ha podido liberar al pokemon del trainer")
+            return modificado
+
         }
 
     },
